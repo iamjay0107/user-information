@@ -1,7 +1,7 @@
 
 const initState = {
 
-    fetching: false,
+    message: "",
     fetched: true,
     users:{
         id: null,
@@ -11,23 +11,28 @@ const initState = {
     }
 }
 
-export default function GetUser(state = initState, action){
+export function GetUser (state = initState, action){
 
         switch(action.type){
             case "GET_USERS":{
-                console.log("getting users")
-                return {...state, fetching: true }
-                
+                return {...state, fetching: true }                
             }
-            case "GET_USERS_FULFILLED":{
-                console.log("getting users done")
-                return {...state, fetching:false, fetched: true, users: action.payload}
+            case "GET_USERS_FULFILLED": {
+                
+                state =  {fetching:false, fetched: true, users: action.payload}
+                console.log(state);
+                return state;                
             }
             case "GET_USERS_REJECTED":{
                 return {...state, fetching: false, fetched: false, error: action.payload}
             }
+            case "ADDING_USERS":{
+                return {...state, isadd: false}
+            }
+            case "ADD_USER_FULFILLED": {
+                return action.payload
+            }
             default:
                 return state;
-
         }
 }

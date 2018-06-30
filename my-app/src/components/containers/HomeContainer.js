@@ -1,35 +1,78 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import  { GetUser}  from '../actions/user'
+import  { GetUser, AddUser}  from '../actions/user'
 
 class HomeContainer extends Component{
 
+    constructor(){
+        super();
+        this.state = {
+            id: null,
+            name: null,
+            title: null
+        }
+    }
 
-    componentDidMount(){
+
+    valueChanged(event){
+        this.setState({ [event.target.name]: event.target.value })
+    }
+
+
+    handleSubmit(event){
+        event.preventDefault();
+        const { name, title} = this.state
+        this.props.dispatch(AddUser({name, title}))
+    }
+
+    reloadData(){
         this.props.dispatch(GetUser())
     }
 
-    render(){    
-        const { myusers, fetching } = this.props;
-        let x = 1;
 
-        if(fetching){
-            return <div>Loading..</div>
-        }
+    renderForm(){
+
+        return(
+            <div>
+                <form onSubmit={this.handleSubmit.bind(this)}>
+
+                    <label htmlFor="name">Name</label>
+                    <div className="input-group input-group-sm mb-3">                             
+                        <input name="name" id="name" type="text" className="form-control" onChange={this.valueChanged.bind(this)} />
+                    </div>
+
+                    <label htmlFor="title">Title</label>
+                    <div className="input-group input-group-sm mb-3">                             
+                        <input name="title" id="title" type="text" className="form-control" onChange={this.valueChanged.bind(this)} />
+                    </div>
+                                                        
+                    <button type="submit" className="btn btn-sm btn-primary">Save</button>
+                </form>
+                <button type="button" className="btn btn-sm btn-default" onClick={this.reloadData.bind(this)}>Reload</button>
+            </div>
+        )
+    }
+
+    render(){    
+        const { myusers, fetching, message } = this.props;
+        let x = 1;    
 
         const firstData = myusers.map((d) => {
             return (
+            
             <tr key={d.id}>
-                <td>{x++}</td>
+                <td>{x++}.</td>
                 <td>{ d.title }</td>
                 <td>{ d.name }</td>
                 <td>{ d.age }</td>
             </tr>)
         });
-        
-        
+                
         return(
-            <div>           
+            <div>
+                { this.renderForm() }
+                { this.props.message }
+                { fetching ? <div>Loading..</div> : "" }
                 <div className="table-responsive">
                     <table className="table table-condensed table-bordered table-hover">
                         <thead>
@@ -43,7 +86,7 @@ class HomeContainer extends Component{
                         <tbody>
                                { firstData }
                         </tbody>
-                    </table>  
+                    </table>
                 </div>
             </div>
         )
@@ -52,7 +95,8 @@ class HomeContainer extends Component{
 
 export default connect((store) => {
     return {
-        myusers: Array.from(store.users.users),
-        fetching: store.users.fetching
+        message: store.GetUser.message,
+        myusers: Array.from(store.GetUser.users),
+        fetching: store.GetUser.fetching
     }
 })(HomeContainer)
