@@ -5,7 +5,21 @@ import logger from 'redux-logger';
 
 import reducers from './reducers/main';
 
-const middleware = applyMiddleware(promise(), thunk, logger);
+
+const customMiddleWare = store => next => action => {
+    console.log("Middleware triggered:", action);
+    next(action);
+  }
+
+
+  const f = store => next => action => {
+        if(action.type === "TEST"){
+            console.log("TEST MIDDLEWARE")
+        }
+        next(action)
+  }
+  
+const middleware = applyMiddleware(thunk, f);
 
 export default createStore(reducers, middleware);
 

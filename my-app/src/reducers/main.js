@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 
-import {GetUser } from './users';
+import {GetUser, DoSearch } from './users';
 
 export default combineReducers({
-    GetUser
-    
+    GetUser,
+    DoSearch    
 });

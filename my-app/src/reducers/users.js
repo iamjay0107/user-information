@@ -31,8 +31,27 @@ export function GetUser (state = initState, action){
             }
             case "ADD_USER_FULFILLED": {
                 return action.payload
-            }
+            }                       
             default:
                 return state;
         }
+}
+
+export function DoSearch(state = initState, action){
+
+    switch(action.type){
+        case "SEARCH_USER":{                
+            state = action.payload;
+            const text = action.text;
+            const filteredUsers = state.filter((user) => 
+            {
+                if(user.name != null)
+                    return user.name.indexOf(text) !== -1 ||  user.title.indexOf(text) !== -1 ;
+            });
+
+            return {...state, users: filteredUsers};
+        }
+        default:
+            return state;
+    }
 }
